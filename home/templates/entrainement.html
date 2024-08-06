@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Entraînement de l'équipe {{ equipe.name }}</h1>
+    <p>Préparez-vous pour la compétition en répondant aux questions ci-dessous.</p>
+    
+    <div id="timer" class="mb-3"></div>
+    
+    <form method="POST" action="{% url 'submit.training' %}">
+        {% csrf_token %}
+        <input type="hidden" name="equipe_id" value="{{ equipe.id }}">
+        
+        {% for question in questions %}
+            <input type="hidden" name="questions" value="{{ question.id }}">
+            <div class="card mb-3 shadow">
+                <div class="card-header">
+                    Question {{ forloop.counter }}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ question.question }}</p>
+                    <div class="form-group">
+                        <input type="text" class="form-control no-copy-paste" name="answer_{{ question.id }}" placeholder="Votre réponse">
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    
+        <button type="submit" class="btn btn-primary mb-3">Soumettre les réponses</button>
+    </form>
+    
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Content de vous comptez parmi nous {{ equipe.name }}</h5>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Bienvenue à la session {{ equipe.training_count }} d'entraînement de votre équipe.
+                    Cette session a pour but de vous préparer efficacement pour la compétition.
+                </p>
+                <p>
+                    Vous disposerez de 10 minutes pour répondre à une série de 10 questions.
+                    Faites de votre mieux pour répondre rapidement et correctement.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="startTimer">D'accord</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="time-end" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h3 class="modal-title text-danger w-100" id="">Temps écoulé</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Désactiver le clic droit
+        /* document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        }); */
+
+        // Désactiver copier, couper et coller
+        var elements = document.querySelectorAll('.no-copy-paste');
+        elements.forEach(function (element) {
+            element.addEventListener('copy', function (e) {
+                e.preventDefault();
+            });
+            element.addEventListener('cut', function (e) {
+                e.preventDefault();
+            });
+            element.addEventListener('paste', function (e) {
+                e.preventDefault();
+            });
+        });
+
+        // Show the modal on first page load
+        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'), {
+            keyboard: false
+        });
+
+        if (!localStorage.getItem('hasSeenModal')) {
+            myModal.show();
+            localStorage.setItem('hasSeenModal', 'true');
+        }
+
+        // Show the modal on page load
+        var ModalEnd = new bootstrap.Modal(document.getElementById('time-end'), {
+            keyboard: false
+        });
+
+        // Start the timer
+        document.getElementById('startTimer').addEventListener('click', function () {
+            var endTime = new Date().getTime() + 10 * 60 * 1000;
+            localStorage.setItem('endTime', endTime);
+            startTimer();
+        });
+
+        // Function to start the timer
+        function startTimer() {
+            var timerInterval = setInterval(function () {
+                var now = new Date().getTime();
+                var endTime = localStorage.getItem('endTime');
+                var distance = endTime - now;
+
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('timer').innerHTML = minutes + "m " + seconds + "s ";
+
+                if (distance < 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').innerHTML = "EXPIRED";
+                    {% comment %} ModalEnd.show(); {% endcomment %}
+                    // localStorage.clear();
+                }
+            }, 1000);
+        }
+
+        // Check if there's an existing timer
+        if (localStorage.getItem('endTime')) {
+            startTimer();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,22 @@
+<ul class="list-group list-group-light w-100">
+    {% if questions %}
+        {% for question in questions %}
+            <li class="list-group-item" id="content-{{question.id}}">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex">
+                        <p class="">{{ forloop.counter }}</p>
+                        <h5 class="ms-3">{{question.question}}</h5>
+                    </div>
+                    <button class="btn text-danger shadow" 
+                        data-url="{% url 'delete.question' %}" 
+                        data-id="{{question.id}}"
+                        id="btn-deleteQuestion">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </li>
+        {% endfor %}
+    {% else %}
+        <p>Aucune question n'est disponible pour le moment</p>
+    {% endif %}
+</ul>

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="container-xxl py-5 wow fadeInUp d-flex align-items-center" 
+                data-wow-delay="0.1s" style="height: 42rem"
+                style="overflow-y: scroll;">
+                <div class="container text-center">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center">
+                            <h2 class="">SCORE</h2>
+                            <p class="mb-4">
+                                {{ total_score }}
+                            </p>
+                            <p class="shadow p-2">
+                                Nouveau score : {{ new_score }}
+                            </p>
+                            <a class="btn btn-primary rounded-pill py-3 px-5" href="{% url 'home' %}">Retour a l'accueil</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="container-xxl py-5 wow fadeInUp d-flex align-items-center
+            " data-wow-delay="0.1s" style="height: 42rem"
+            style="overflow-y: scroll;">
+            <div class="container text-center">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 d-flex flex-column justify-content-center align-items-center">
+                        <h2 class="mb-4">C'est bon pour aujourd'hui</h2>
+
+                        <a class="btn btn-primary rounded-pill py-3 px-5" href="{% url 'home' %}">
+                            Go Back To Home
+                        </a>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    {% endif %}
+
+{% endblock %}

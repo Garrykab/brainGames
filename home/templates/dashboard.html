@@ -1,0 +1,363 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<!-- Carousel Start -->
+<div class="container-fluid p-0">
+    <div class="">
+        <div class="mt-2" style="height: 78vh">
+        
+            <div class="row ms-2">
+                <div class="col-sm-3">
+                    <div class="list-group list-group-light" id="list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active px-3 border-0" id="list-home-list"
+                            data-mdb-list-init href="#list-home" role="tab" aria-controls="list-home">
+                            Toutes les équipes participantes
+                        </a>
+                        <a class="list-group-item list-group-item-action px-3 border-0" 
+                            id="list-question" data-url="{% url 'questionnaire' %}"
+                            data-mdb-list-init href="#list-profile" role="tab" 
+                            aria-controls="list-profile">
+                            Questionnaire
+                        </a>
+                        <a class="list-group-item list-group-item-action px-3 border-0"
+                            data-mdb-list-init href="#list-confugiration" role="tab" 
+                            aria-controls="list-confugiration">
+                            Configurations
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-sm-9">
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="list-home" role="tabpanel"
+                            aria-labelledby="list-home-list">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-between">
+                                    <h1>Toutes les équipes</h1>
+                                    <div class="">
+                                        <button type="button" class="btn btn-primary mx-3" 
+                                            data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                            <i class="fas fa-plus"></i>
+                                            Inscrire une equipe
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if equipes %}
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Nº</th>
+                                            <th scope="col">Non de l'equipe</th>
+                                            <th scope="col">Promotion</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for equipe in equipes %}
+                                            <tr class="">
+                                                <th class="pt-3" scope="row">{{ forloop.counter }}</th>
+                                                <td class="card-title text-uppercase pt-3">
+                                                    {{equipe.name}}
+                                                </td>
+                                                <td class="card-title text-uppercase pt-3">
+                                                    {{equipe.promotion}}
+                                                </td>
+                                                <td class="card-title text-uppercase">
+                                                    <a  href="{% url 'edit.equipe' %}?token={{equipe.token}}" 
+                                                        class="btn text-info shadow">
+                                                        <i class="fas fa-pen fa-1x"></i>
+                                                    </a>
+                                                
+                                                    <a href="{% url 'delete.equipe' %}?id={{equipe.id}}"
+                                                        class="btn text-danger shadow">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p>Aucune équipe n'est disponible pour le moment</p>
+                            {% endif %}
+                        </div>
+                        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-between">
+                                    <h1 >Questions</h1>
+                                    <div class="text-end pt-2">
+                                        <button type="button" class="btn btn-primary mx-2 shadow" 
+                                            data-bs-toggle="modal" data-bs-target="#fichierCSV">
+                                            <i class="fas fa-plus"></i>
+                                            Charger un fichier csv
+                                        </button>
+
+                                        <button type="button" class="btn btn-secondary shadow"
+                                            data-bs-toggle="modal" data-bs-target="#generatorIA">
+                                            <i class="fas fa-plus"></i>
+                                            Générer avec l'IA
+                                        </button>
+
+                                        <button type="button" class="btn btn-warning ms-2 shadow" 
+                                            data-bs-toggle="modal" data-bs-target="#ajouterQuestion">
+                                            <i class="fas fa-plus"></i>
+                                            Ajouter
+                                        </button>
+
+                                        {% if questions %}
+                                            <button type="button" class="btn btn-danger mx-2 shadow" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteAllQuestion">
+                                                <i class="fas fa-trash"></i>
+                                                Supprimer toutes les questions ({{ questions|length }})
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-between" style="height: 41.5rem" id="datas-question">
+                                    {% comment %} LISTE DE QUESTION {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="list-confugiration" role="tabpanel" aria-labelledby="list-profile-list">
+                            <div class="row">
+                                <div class="col-sm-12 d-flex justify-content-between">
+                                    <h1>Configurations</h1>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-warning mx-2"
+                                            data-url="{% url 'configs' %}" id="btnReinitConfigs">
+                                            Réinitialiser les configurations
+                                        </button>
+
+                                        <button type="button" class="btn btn-primary mx-2"
+                                            data-url="{% url 'configs' %}" id="btnSaveConfig">
+                                            Enregister les configurations
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row d-flex align-items-center mt-3">
+                                <div class="col-sm-3">
+                                    <p class="fw-bold">Nombre de questions par equipe</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="number" name="nombre_question"
+                                        id="nombre_question" class="form-control"
+                                        placeholder="Veillez definire le nombre de questions par equipe" min="1" 
+                                        {% if configs.nombre_question %}
+                                            value="{{ configs.nombre_question }}"
+                                        {% endif %}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div class="row d-flex align-items-center mt-3">
+                                <div class="col-sm-3">
+                                    <p class="fw-bold">Définir la durée de chaque question</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="number" id="duration" name="duration" 
+                                        min="1" class="form-control"
+                                        {%if configs.duree %} 
+                                            value="{{ configs.duree }}"
+                                        {% endif %}
+                                        placeholder="Durée en secondes" required
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="row d-flex align-items-center mt-3">
+                                <div class="col-sm-3">
+                                    <p class="fw-bold">Difficulté</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select class="form-select" id="difficulte" name="difficulte" data-mdb-select-init>
+                                        <option value="Facile" {% if configs and configs.difficulte == "Facile" %}selected{% endif %}>Facile</option>
+                                        <option value="Normal" {% if configs and configs.difficulte == "Normal" %}selected{% endif %}>Normal</option>
+                                        <option value="Difficile" {% if configs and configs.difficulte == "Difficile" %}selected{% endif %}>Difficile</option>
+                                        <option value="Très difficile" {% if configs and configs.difficulte == "Très difficile" %}selected{% endif %}>Très difficile</option>
+                                    </select>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+
+  <!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="staticBackdropLabel">INSCRIRE UNE ÉQUIPE</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'add.equipe' %}" method="POST" id="formAddEquipe">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div data-mdb-input-init class="form-outline mb-3">
+                        <input type="text" name="name-equipe" 
+                            url-nameExiste="{% url 'name.equipe.existe' %}" 
+                            id="name-equipe" class="form-control" 
+                            placeholder="Entrez le nom de l'équipe"/>
+                        <p class="text-danger text-start" id="error-name-equipe"></p>
+                    </div>
+                    
+                    
+                    <div data-mdb-input-init class="form-outline">
+                        <input type="text" name="promotion-equipe" 
+                            url-promotionExiste="{% url 'promotion.equipe.existe' %}" 
+                            id="promotion-equipe" class="form-control" 
+                            placeholder="Entrez la promotion de l'équipe"
+                        />
+                        <p class="text-danger text-start" id="error-promotion-equipe"></p>
+                    </div>
+
+                    <!-- Email input -->
+                    <div data-mdb-input-init class="form-outline">
+                        <input type="email" name="email" 
+                            id="email" class="form-control" 
+                            placeholder="Entrez l'adresse mail"
+                            required
+                        />
+                        {% comment %} <p class="text-danger text-start" id="error-promotion-equipe"></p> {% endcomment %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" 
+                        id="btn-Add-equipe"
+                        class="btn btn-primary w-100"
+                        data-token="{{ csrf_token }}"
+                    >
+                        Inscrire
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fichierCSV" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="staticBackdropLabel">CHARGER UN FICHIER CSV</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'add.question.csv' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <small class="form-text text-center mb-3">
+                        Le fichier CSV doit contenir une colonne intitulée <strong>"question"</strong>.
+                    </small>
+
+                    <div data-mdb-input-init class="form-outline mb-3">
+                        <input type="file" name="fichiercsv" id="fichiercsv" class="form-control" required/>
+                        <p class="text-danger pt-2 text-start" id="error-fichiercsv"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn-addCsv"
+                        class="btn btn-primary w-100"
+                        data-token="{{ csrf_token }}"
+                    >
+                        Charger
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="generatorIA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="staticBackdropLabel">GÉNÉRER DES QUESTIONS AVEC L'IA</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'generatorQuestionIA' %}" method="POST" id="generatorQuestionIA">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div data-mdb-input-init class="form-outline">
+                        <input type="number" name="nombre-question"
+                            id="nombre-question" class="form-control" 
+                            placeholder="Entrez le nombre de question"
+                            required
+                        />
+                        <p class="text-danger text-start" id="error-nombre-question"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit"
+                        class="btn btn-primary w-100"
+                        data-token="{{ csrf_token }}"
+                    >
+                        Générer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteAllQuestion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header w-100">
+                <div class="text-danger text-center fw-bold">
+                    Êtes sûr de vouloir supprmer toutes les questions ?
+                </div>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Annuler
+                </button>
+                <form action="{% url 'delete.all.question' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="btn btn-danger"
+                    >
+                        Confirmer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ajouterQuestion" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="staticBackdropLabel">AJOUTER UNE QUESTION</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'add.question' %}" method="POST" id="ajouterQuestion">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div data-mdb-input-init class="form-outline">
+                        <textarea class="form-control" placeholder="Entrez la question ici" id="question" name="question" rows="4" required></textarea>
+                        <p class="text-danger text-start" id="error-nombre-question"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit"
+                        class="btn btn-primary w-100"
+                        data-token="{{ csrf_token }}"
+                    >
+                        Ajouter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

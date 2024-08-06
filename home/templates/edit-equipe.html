@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="height: 80vh">
+    <div class="row w-75">
+        <div class="col-md-12">
+            <div class="card my-3 shadow">
+                <div class="card-body text-uppercase text-center fw-bold">
+                    <h3 class="card-title mb-5">{{equipe.name}}</h3>
+                    <p class="card-text">
+                        PROMOTION : {{equipe.promotion}}
+                    </p>
+                    <p class="card-text">
+                        NOMBRE DE MEMBRES : 4
+                    </p>
+                    <p class="card-text">
+                        SCORE ENTRAINEMENT : {{equipe.score}}
+                    </p>
+                    <p class="card-text">
+                        POINTS OBTENUS : {{equipe.point}}
+                    </p>
+                    <p class="card-text">
+                        STATUT : {% if equipe.status %} {{equipe.status}} {% else %} Non défini {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <img class="img-fluid" src="{% static 'img/logo-2.webp' %}" alt="The Brain Games">
+            </div>
+            <div class="col-lg-6">
+                <h1 class="mb-4">À propos de The Brain Games</h1>
+                <p class="mb-4">Bienvenue sur The Brain Games, une plateforme interactive conçue pour défier et améliorer vos compétences en informatique. Que vous soyez étudiant, professionnel ou simplement passionné par la technologie, The Brain Games offre une variété de questions et de jeux pour stimuler votre esprit.</p>
+                <h2 class="mb-4">Notre Mission</h2>
+                <p class="mb-4">Notre mission est de fournir une expérience d'apprentissage engageante et éducative qui encourage la réflexion critique et la résolution de problèmes. Nous croyons que l'apprentissage peut être amusant et stimulant à la fois.</p>
+                <h2 class="mb-4">Fonctionnalités de The Brain Games</h2>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Questions générées automatiquement par IA</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Possibilité de charger des fichiers CSV pour ajouter des questions</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Interface utilisateur intuitive</li>
+                    <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i>Options de gestion des équipes</li>
+                </ul>
+                <h2 class="mb-4">Pourquoi Choisir The Brain Games ?</h2>
+                <p class="mb-4">Nous nous engageons à offrir un contenu de qualité et des fonctionnalités innovantes pour rendre l'apprentissage de l'informatique accessible et agréable. Notre plateforme est constamment mise à jour avec de nouvelles questions et fonctionnalités pour répondre aux besoins de nos utilisateurs.</p>
+                <h2 class="mb-4">Contactez-nous</h2>
+                <p>Si vous avez des questions ou des suggestions, n'hésitez pas à nous contacter à <a href="mailto:support@braingames.com">support@braingames.com</a>. Nous serons ravis de recevoir vos commentaires et de vous aider.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

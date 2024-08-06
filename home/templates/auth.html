@@ -1,0 +1,65 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+<div class="container-xxl py-5">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 65vh">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="d-flex flex-column justify-content-center align-items-center col-lg-12 col-sm-6 wow fadeInUp"
+                data-wow-delay="0.1s">
+                <p class="">Veuillez vous authentifier pour accéder aux paramètres</p>
+                <div class="card text-center pt-4 mt-2">
+                    <div class="p-4 w-100">
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% comment %} <div class="alert alert-{{ message.tags }} 
+                                    alert-dismissible fade show" role="alert"
+                                    style="margin-top: 10px">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label "Close"></button>
+                                </div> {% endcomment %}
+                                <p class="alert-danger py-2 fw-bold" id="error-password">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        {% comment %} <p class="alert-danger py-2" id="error-password"></p> {% endcomment %}
+                        <form action="{% url 'login' %}" method="POST" id="formAuth">
+                            {% csrf_token %}
+                            <div class="form-outline mb-2">
+                                <input
+                                    type="text"
+                                    id="username"
+                                    name="username"
+                                    class="form-control"
+                                    placeholder="Nom utilisateur"
+                                    size="45"
+                                />
+                                <p class="text-danger text-start" id="error-username"></p>
+                            </div>
+
+                            <div class="form-outline">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="form-control"
+                                    placeholder="Mot de passe"
+                                    size="45"
+                                />
+                                <p class="text-danger text-start" id="error-password"></p>
+                            </div>
+
+                            <!-- Submit button -->
+                            <button
+                                type="submit"
+                                id="btn-valider"
+                                class="btn btn-primary btn-block mb-4 w-100"
+                            >
+                                Valider
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
